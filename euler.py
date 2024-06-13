@@ -1,4 +1,4 @@
-import math
+import numpy as np
 
 class Euler:
     def __init__(self, h_, t_0, y_0, diff_fun_):
@@ -9,6 +9,7 @@ class Euler:
 
     def update(self):
         self.y_n = self.y_n + self.h*self.diff_fun(self.t_n, self.y_n)
+
         self.t_n = self.t_n + self.h
 
         return self.y_n
