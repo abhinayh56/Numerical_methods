@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 # Exact solution
 T = 5
-dt = 0.01
+dt = 0.25
 N = int(T/dt)
 t_exact = np.linspace(0,T,N)
 
@@ -17,7 +17,7 @@ w = 2.0*np.pi*f
 y_exact = A*np.sin(w*t_exact)
 
 # differential equation
-def model_1(x, y):
+def model_11(x, y):
     A = 10.0
     T = 1.0
     f = 1.0 / T
@@ -25,7 +25,7 @@ def model_1(x, y):
 
     return A*w*math.cos(w*x)
 
-def model_11(t, X):
+def model_1(t, X):
     # spring mass damper system
     m = 0.25
     k = 10.0
@@ -69,18 +69,24 @@ dx_dt_2 = y_2[:,1]
 
 # Solution using RK45 method
 int_3 = rk45.RK45(dt, t_0, y_0, model_1)
-y_3 = np.zeros((len(t), len(y_0)))
-y_3[0,:] = y_0
-for i in range(0, len(t)-1):
-    y_3[i+1,:] = int_3.update()
+y_3 = np.array([0, 0])
+t_3 = np.array([0])
+
+y_3 = y_0
+
+while(int_3.get_t_n() < t[-1]):
+    result1, result2 = int_3.update()
+    np.append(y_3, result2)
+    np.append(t_3, result1)
+
 x_3 = y_3[:,0]
 dx_dt_3 = y_3[:,1]
 
 plt.figure(1)
 plt.subplot(2,1,1)
 plt.plot(t,x_1,'r:',linewidth=4)
-plt.plot(t,x_2,'y-',linewidth=2)
-plt.plot(t,x_3,'k-',linewidth=1)
+plt.plot(t,x_2,'c-',linewidth=2)
+plt.plot(t,x_3,'k--',linewidth=1)
 plt.title("Position")
 plt.xlabel('t (s)')
 plt.ylabel('y')
@@ -89,8 +95,8 @@ plt.grid()
 
 plt.subplot(2,1,2)
 plt.plot(t,dx_dt_1,'r:',linewidth=4)
-plt.plot(t,dx_dt_2,'y-',linewidth=2)
-plt.plot(t,dx_dt_3,'k-',linewidth=1)
+plt.plot(t,dx_dt_2,'c-',linewidth=2)
+plt.plot(t,dx_dt_3,'k--',linewidth=1)
 plt.title("Velocity")
 plt.xlabel('t (s)')
 plt.ylabel('dy_dt')
